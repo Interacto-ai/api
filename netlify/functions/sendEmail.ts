@@ -1,50 +1,49 @@
-const emailjs = require('@emailjs/nodejs');
+const nodemailer = require('nodemailer');
 
 exports.handler = async (event) => {
   const headers = {
-    'Access-Control-Allow-Origin': '*', // Replace '*' with your actual domain for security
+    'Access-Control-Allow-Origin': '*', // Replace with your domain
     'Access-Control-Allow-Headers': 'Content-Type',
   };
 
   if (event.httpMethod === 'OPTIONS') {
-    // Handle preflight request
-    return {
-      statusCode: 200,
-      headers,
-      body: 'Preflight check',
-    };
+    return { statusCode: 200, headers, body: 'Preflight' };
   }
 
   if (event.httpMethod !== 'POST') {
-    return {
-      statusCode: 405,
-      headers,
-      body: 'Method Not Allowed',
-    };
+    return { statusCode: 405, headers, body: 'Method Not Allowed' };
   }
 
   try {
-    const data = JSON.parse(event.body);
-    const { name, email, mobile, company, message } = data;
+    const { name, email, mobile, company, message } = JSON.parse(event.body);
 
-    await emailjs.send(
-      process.env.EMAILJS_SERVICE_ID,
-      process.env.EMAILJS_TEMPLATE_ID,
-      { name, email, mobile, company, message },
-      { publicKey: process.env.EMAILJS_PUBLIC_KEY }
-    );
+    // Configure transporter (example using Gmail SMTP)
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+      },
+    });
+
+    await transporter.sendMail({
+      from: process.env.SMTP_USER,
+      to: process.env.RECEIVER_EMAIL,
+      subject: `New message from ${name}`,
+      text: `Email: ${email}\nMobile: ${mobile}\nCompany: ${company}\nMessage: ${message}`,
+    });
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({ message: 'Email sent successfully' }),
     };
-  } catch (error) {
-    console.error('Email sending error:', error);
+  } catch (err) {
+    console.error(err);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ message: 'Failed to send email', error: error.message }),
+      body: JSON.stringify({ message: 'Email sending failed', error: err.message }),
     };
   }
 };
