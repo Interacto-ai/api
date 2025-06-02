@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@emailjs/nodejs": "^5.0.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.29"
+  }
+}
