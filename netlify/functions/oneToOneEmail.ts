@@ -1,4 +1,5 @@
-const nodemailer = require('nodemailer');
+import nodemailer from "nodemailer";
+
 const { generateUserConfirmationEmail } = require("./emailTemplate");
 
 exports.handler = async (event) => {
