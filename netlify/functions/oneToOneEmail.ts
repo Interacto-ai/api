@@ -1,4 +1,4 @@
-const { generateUserConfirmationEmail } = require("./emailTemplates");
+const { generateUserConfirmationEmail } = require("../utils/emailTemplates");
 
 exports.handler = async (event) => {
   const headers = {
