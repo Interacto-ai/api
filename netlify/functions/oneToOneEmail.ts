@@ -1,6 +1,7 @@
 import nodemailer from "nodemailer";
 
 const { generateUserConfirmationEmail } = require("./emailTemplate");
+const { generateMentorEmail } = require("./emailTemplate");
 
 exports.handler = async (event) => {
   const headers = {
@@ -40,6 +41,19 @@ exports.handler = async (event) => {
         html: emailContent.html,
         text: emailContent.text,
       });
+      userEmailStatus = 'sent';
+    } catch (adminErr) {
+      console.error('User email failed:', adminErr);
+    }
+
+    try {
+      await transporter.sendMail({
+        from: process.env.SMTP_USER,
+        to: process.env.RECEIVER_EMAIL,
+        subject: `New 1-on-1 Mentor Request from ${name}`,
+        text: generateMentorEmail({ name, email, mobile, company, message }),
+      });
+
       adminEmailStatus = 'sent';
     } catch (adminErr) {
       console.error('Admin email failed:', adminErr);
