@@ -1,4 +1,4 @@
-exports.generateUserConfirmationEmail = ({ name }) => ({
+exports.generateUserConfirmationEmail = ({ name, mentorEmail, mentorName }) => ({
   subject: "🎓 You're booked for a 1-on-1 Mentor Call!",
   html: `
     <div style="font-family: Arial, sans-serif; padding: 20px; background: #f8f9fc; color: #333;">
@@ -6,10 +6,11 @@ exports.generateUserConfirmationEmail = ({ name }) => ({
         <div style="padding: 30px;">
           <h2 style="color: #4f46e5;">Hi ${name}, 👋</h2>
           <p style="font-size: 16px; line-height: 1.6;">
-            Thank you for booking a <strong>1-on-1 Interview Mentor Session</strong> with <span style="color: #4f46e5;"><strong>Interacto</strong></span>.
+            Thank you for booking a <strong>1-on-1 Interview Mentor Session</strong> with ${mentorName} <span style="color: #4f46e5;"><strong>Interacto</strong></span>.
           </p>
           <p style="font-size: 16px; line-height: 1.6;">
             Our expert will get in touch with you shortly. In the meantime, feel free to prepare your questions and keep your resume handy! 📝
+            If you don't receive anything from mentors side, you can mail our mentor directly at - ${mentorEmail}
           </p>
           <hr style="margin: 20px 0;" />
           <p style="font-size: 14px; color: #555;">

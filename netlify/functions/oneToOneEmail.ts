@@ -18,7 +18,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { name, email, mobile, company, message } = JSON.parse(event.body);
+    const { name, email, mobile, company, message, mentorName, mentorEmail } = JSON.parse(event.body);
 
     const transporter = nodemailer.createTransport({
       service: 'gmail',
@@ -32,7 +32,7 @@ exports.handler = async (event) => {
     let userEmailStatus = 'not sent';
 
     // Try sending to admin/mentor
-    const emailContent = generateUserConfirmationEmail({ name });
+    const emailContent = generateUserConfirmationEmail({ name, mentorEmail, mentorName });
     try {
       await transporter.sendMail({
         from: process.env.SMTP_USER,
@@ -49,11 +49,12 @@ exports.handler = async (event) => {
     try {
       await transporter.sendMail({
         from: process.env.SMTP_USER,
-        to: process.env.RECEIVER_EMAIL,
+        to: mentorEmail,
         subject: `New 1-on-1 Mentor Request from ${name}`,
         text: generateMentorEmail({ name, email, mobile, company, message }),
       });
 
+      console.log("Mail sent => ", )
       adminEmailStatus = 'sent';
     } catch (adminErr) {
       console.error('Admin email failed:', adminErr);
