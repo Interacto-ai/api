@@ -47,14 +47,16 @@ exports.handler = async (event) => {
     }
 
     try {
+      const emailContent = generateMentorEmail({ name, email, mobile, company, message });
       await transporter.sendMail({
         from: process.env.SMTP_USER,
         to: mentorEmail,
-        subject: `New 1-on-1 Mentor Request from ${name}`,
-        text: generateMentorEmail({ name, email, mobile, company, message }),
+        subject: emailContent.subject,
+        html: emailContent.html,
+        text: emailContent.text,
       });
 
-      console.log("Mail sent => ", )
+      console.log("Mail sent successfully ")
       adminEmailStatus = 'sent';
     } catch (adminErr) {
       console.error('Admin email failed:', adminErr);
